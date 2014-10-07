@@ -1,0 +1,14 @@
+{
+  "branch-list": [
+    "BR_SE_BISQUE",
+    "BR_RESPONSIVE_W8.1",
+    "BR_JQUERY1.10.2_UPGRADE_CODEFIXES",
+    "BR_WEM_BUGFIXES_OCT",
+    "BR_POLYDOR_123",
+    "BR_EOU_OCT",
+    "BR_DEVOPS_SHAZBOT",
+    "BR_FGE_1.1",
+    "BR_DM_BISQUE",
+    "develop"
+  ]
+}

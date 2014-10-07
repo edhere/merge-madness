@@ -10,8 +10,8 @@ or set up symlink
 `ln -s ~/merge-madness/bin/git-merge-madness ~/bin/git-merge-madness`
   
 ### how to use
-move to repo  
-`cd repo`  
+move to WEM  
+`cd wem`  
 create a hidden manifest file in the root of WEM clone  
 `vi .merge-madness-manifest`  
 the manifest is a JSON structured branch list
@@ -24,6 +24,8 @@ the manifest is a JSON structured branch list
   ]
 }
 ```   
+or just copy an example branch list manifest  
+`cp ~/merge-madness/examples/bisque-release-manifest .merge-madness-manifest`   
 run merge-madness  
 `git merge-madness`  
 
