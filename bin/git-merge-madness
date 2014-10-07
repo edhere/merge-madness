@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+require 'json'
+
+USAGE = <<EOS
+git-merge-madness displays the merge status of each of the branches listed in the branch manifest merged with one another
+
+Usage: git merge-madness [options]
+
+You must:
+
+1. be in the context a git repo
+2. have previously defined a hidden .merge-madness-manifest file at git repo root
+
+The possible [options] are:
+
+  -h          help me!
+EOS
+
+module Error
+  MISSING_MANIFEST = "no .merge-madness-manifest in cwd"
+  NOT_GIT_REPO = "not a git repo"
+end
+
+def exit_with_error(e); puts e; exit; end
+
+if (ARGV.include? "--help")||(ARGV.include? "-h"); puts USAGE; exit; end
+if (ARGV.include? "--debug")||(ARGV.include? "-d"); end
+
+exit_with_error(Error::MISSING_MANIFEST) if not File.file? ".merge-madness-manifest"
+exit_with_error(Error::NOT_GIT_REPO) if not File.directory? ".git"
+
+manifest = JSON.parse(File.open(".merge-madness-manifest").read()) rescue {"branch-list"=>[]}
+
+branch_list,results = manifest["branch-list"].freeze,{}
+branch_list.each{|branch| results[branch] = {}}
+
+branch_list.each{|upstream_branch|
+  branch_list.reject{|br| br==upstream_branch}.each{|downstream_branch|
+    puts "#{downstream_branch} -> #{upstream_branch}"
+    if results[downstream_branch][upstream_branch]
+      puts "pulled from #{upstream_branch} -> #{downstream_branch}"
+      results[upstream_branch][downstream_branch] = results[downstream_branch][upstream_branch]
+    else
+      `git checkout "#{upstream_branch}"`
+      `git reset --hard origin/"#{upstream_branch}"`
+      merge = `git merge origin/"#{downstream_branch}" --no-commit --no-ff`
+      results[upstream_branch][downstream_branch] = (merge.split("\n").last || "Automatic merge went well; stopped before committing as requested")
+      `git merge --abort`
+      `git reset --hard origin/"#{upstream_branch}"`
+      `git clean --exclude=".merge-madness-manifest"`
+    end
+  }
+}
+
+puts results
