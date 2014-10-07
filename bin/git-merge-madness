@@ -32,7 +32,7 @@ exit_with_error(Error::NOT_GIT_REPO) if not File.directory? ".git"
 
 manifest = JSON.parse(File.open(".merge-madness-manifest").read()) rescue {"branch-list"=>[]}
 
-branch_list,results = manifest["branch-list"].freeze,{}
+branch_list,fetch,results = manifest["branch-list"].freeze,`git fetch`,{}
 branch_list.each{|branch| results[branch] = {}}
 
 branch_list.each{|upstream_branch|
