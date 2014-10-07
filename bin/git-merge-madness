@@ -53,4 +53,5 @@ branch_list.each{|upstream_branch|
   }
 }
 
-puts results
+pretty_results = JSON.pretty_generate(results)
+File.open('out.json', 'w') { |f| f.write(pretty_results) }
